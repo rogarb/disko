@@ -50,6 +50,11 @@
             default = null;
             description = "Location to mount the subvolume to.";
           };
+          dontMount = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "If set to true, the subvolume will be created but not mounted.";
+          };
         };
       }));
       default = { };
@@ -94,7 +99,7 @@
               let
                 mountpoint =
                   if (subvol.mountpoint != null) then subvol.mountpoint
-                  else if (config.mountpoint == null) then subvol.name
+                  else if (config.mountpoint == null && subvol.dontMount == false) then subvol.name
                   else null;
               in
               lib.optionalAttrs (mountpoint != null) {
